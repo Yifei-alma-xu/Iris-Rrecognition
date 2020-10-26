@@ -1,0 +1,16 @@
+#################
+#Temporary files#
+#################
+*.swp
+*.pyc
+.env/*
+__pycache__/*
+.DS_Store
+
+
+###############
+#Jupyter files#
+###############
+.ipynb_checkpoints/*
+.idea/*
+.vscode/*
