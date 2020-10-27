@@ -40,10 +40,10 @@ def iris_localization(img):
     eye_edges_iris = cv2.Canny(blured_copy,5,30)
     circles_iris = cv2.HoughCircles(eye_edges_iris,cv2.HOUGH_GRADIENT,1,300,
                             param1=200,param2=20,
-                           minRadius=60,maxRadius=150)
+                           minRadius=60,maxRadius=130)
     circles_pupil = cv2.HoughCircles(eye_edges_pupil,cv2.HOUGH_GRADIENT,1,300,
                             param1=200,param2=20,
-                           minRadius=30,maxRadius=80)
+                           minRadius=20,maxRadius=80)
     if circles_pupil is not None:
         circle = circles_pupil[0,:][0]
         pupil_circle = np.uint16(np.around(circle))
