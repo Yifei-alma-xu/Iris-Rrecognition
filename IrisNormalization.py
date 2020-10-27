@@ -1,42 +1,50 @@
 import numpy as np
 
 
-def iris_normalization(img_gray, pupil, iris):
-    M = 64
-    N = 512
-    rect = np.zeros((M, N))
-    x_p = pupil[0][0]
-    y_p = pupil[0][1]
-    r_p = pupil[0][2]
-    x_i = iris[0][0]
-    y_i = iris[0][1]
-    r_i = iris[0][2]
-
-    X = np.arange(N) / N
-    theta = 2 * np.pi * X
-    X_pt = x_p + r_p * np.cos(theta)
-    Y_pt = y_p + r_p * np.sin(theta)
-    X_it = x_p + r_i * np.cos(theta)
-    Y_it = y_p + r_i * np.sin(theta)
+def iris_normalization(img, pupil, iris):
+    # 64*512 MxN
+    M, N = 64, 512
+    norm_img = np.zeros((M, N))
+    pupil_x, pupil_y, pupil_r  = pupil
+    iris_x, iris_y, iris_r = iris
+    
+    theta = 2*np.pi*np.arange(N)/N
+    #X_pt = x_p + r_p * np.cos(theta)
+    #Y_pt = y_p + r_p * np.sin(theta)
+    #X_it = x_p + r_i * np.cos(theta)
+    #Y_it = y_p + r_i * np.sin(theta)
     Y = np.arange(M) / M
+    
+    yp = pupil_y + pupil_r*np.sin(theta)
+    xp = pupil_x + pupil_r*np.cos(theta)
 
+    #yi = iris_y + iris_r*np.sin(theta)
+    #xi = iris_x + iris_r*np.cos(theta)
+    yi = pupil_y + iris_r*np.sin(theta)
+    xi = pupil_x + iris_r*np.cos(theta)
+    #for Y in range(M):
+    #    x = min(int(xp + (xi-xp)*Y/M),319)
+    #    y = min(int(yp + (yi-yp)*Y/M),279)
+
+    #    norm_img[Y][X] = img[y][x]
+    
     for i in range(N):
-        x_pt = X_pt[i]
-        y_pt = Y_pt[i]
-        x_it = X_it[i]
-        y_it = Y_it[i]
+        x_pt = xp[i]
+        y_pt = yp[i]
+        x_it = xi[i]
+        y_it = yi[i]
 
         # Compute the coordinate of corresponding point (x,y) in the original image
         x = np.minimum((x_pt + (x_it - x_pt) * Y).astype(int), 319)
         y = np.minimum((y_pt + (y_it - y_pt) * Y).astype(int), 279)
-        rect[:, i] = img_gray[y, x]
-
-    return rect
+        norm_img[:, i] = img[y, x]
+        
+    return norm_img
 
 
 if __name__ == "__main__":
-    from IrisRecognition import load_dataset
-    from IrisLocalization import iris_localization
+    from fy_IrisRecognition import load_dataset
+    from fy_IrisLocalization import iris_localization
     import matplotlib.pyplot as plt
 
     x_train_img, _, _, _ = load_dataset()
