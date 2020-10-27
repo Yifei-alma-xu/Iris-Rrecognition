@@ -7,6 +7,10 @@
 __pycache__/*
 .DS_Store
 
+#################
+#Image files#
+#################
+CASIA Iris Image Database (version 1.0)/*
 
 ###############
 #Jupyter files#
