@@ -59,7 +59,7 @@ def iris_localization(img):
 
 
 if __name__ == "__main__":
-    from fy_IrisRecognition import load_dataset    
+    from IrisRecognition import load_dataset    
     x_train_img, _, _, _ = load_dataset()
 
     img_gray = x_train_img[311]

@@ -43,8 +43,8 @@ def iris_normalization(img, pupil, iris):
 
 
 if __name__ == "__main__":
-    from fy_IrisRecognition import load_dataset
-    from fy_IrisLocalization import iris_localization
+    from IrisRecognition import load_dataset
+    from IrisLocalization import iris_localization
     import matplotlib.pyplot as plt
 
     x_train_img, _, _, _ = load_dataset()
