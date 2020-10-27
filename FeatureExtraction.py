@@ -1,4 +1,3 @@
-from numpy.lib.twodim_base import mask_indices
 import numpy as np
 from scipy import ndimage
 
@@ -21,7 +20,7 @@ def feature_extraction(rect_roi):
     filt1 = defined_filter(3, 1.5, 7, 0.07)
     filt2 = defined_filter(4.5, 1.5, 7, 0.07)
     img_filt1 = ndimage.convolve(rect_roi, filt1, mode='wrap')
-    img_filt2 = ndimage.convolve(rect_roi, filt1, mode='wrap')
+    img_filt2 = ndimage.convolve(rect_roi, filt2, mode='wrap')
     v = []
     for i in range(64):
         for j in range(6):

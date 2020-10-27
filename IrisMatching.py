@@ -1,5 +1,7 @@
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.neighbors.nearest_centroid import NearestCentroid
+import warnings
+warnings.filterwarnings("ignore")
 
 DISTANCE_METRICS = ['l1', 'l2', 'cosine']
 
