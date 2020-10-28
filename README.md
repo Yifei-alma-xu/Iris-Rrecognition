@@ -16,12 +16,19 @@ Fall 2020 GR5293 Image Analysis: Group Project Iris Recognition
 | cosine | 0.666667 | 0.928241 |
   
   - CRR vs dimensionality(fig 10)
-   <img src="fig10_crr_dimensionality.png" height="300">
+   <img src="fig10_CRR_dimentionality.jpg" height="300">
 
-  - table 4
-  - fig 13/10
+  - False Match and False Nonmatch Rates with Different Threshold Values(table 4)
+  
+  |Threshold| False match rate | False non-match rate|
+  | :---: | :---: | :---: |
+  |1.50e-08    |      0.000000     |   0.009238|
+  |1.00e-07    |      0.000000     |   0.003793|
+  |1.500e-07   |      0.002924     |   0.001965|
+  - fig 11/13
+  <img src="fig11_13_FM_vs_FNM_curve.jpg" height="300">
   - ROC figure:
-  <img src="ROC_1.png" height="300">
+  <img src="ROC_curve.jpg" height="300">
 
 ## Design
   - The project implement the exact same design as Ma et al., 2003 paper.
