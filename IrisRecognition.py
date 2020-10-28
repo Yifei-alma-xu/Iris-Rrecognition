@@ -79,11 +79,12 @@ if __name__ == "__main__":
     print('========= CRR table =========')
     print(pd.DataFrame(crr_dict, index = ['L1', 'L2', 'cosine']))
     
+    #fig10
     crr_plot = generate_LDA_dimension_CRR_plot(x_train, y_train, x_test, y_test)
     generate_roc_curve(clfs, y_preds, x_test_lda, y_test)
     # table 4
     generate_threshold_table(clfs[2], y_preds[2], x_test_lda, y_test, 
-                             thresholds = list(np.arange(0, 11)/10)+[0.446, 0.472, 0.502])
+                             thresholds = [1.5e-8, 1e-7, 1.5e-7])
     # fig 11
     generate_fm_fnm_curve(clfs[2], y_preds[2], x_test_lda, y_test, 
-                          thresholds = list(np.arange(0, 11)/10)+[0.446, 0.472, 0.502])
+                          thresholds = np.arange(1, 10, 0.05)*1e-7)

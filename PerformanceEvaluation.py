@@ -29,6 +29,7 @@ def generate_LDA_dimension_CRR_plot(x_train, y_train, x_test, y_test,
     plt.xlabel('Dimensionality of the feature vector')
     plt.ylabel('Correct Recognition rate')
     plt.title('Recognition results using feature of different vector')
+    plt.savefig('fig10_CRR_dimentionality.jpg')
     #plt.show()
     return crr_arr
         
@@ -38,6 +39,10 @@ def predict_proba(self, X):
     probs = np.min(distances, axis=1)
     return probs
 
+def predict_proba_verification(self, X):
+    distances = pairwise_distances(X, self.centroids_, metric=self.metric)
+    probs = distances
+    return probs
 
 def generate_roc_curve(clfs, y_preds, x_test, y_true,
                        metrics=DISTANCE_METRICS):
@@ -59,25 +64,30 @@ def generate_roc_curve(clfs, y_preds, x_test, y_true,
     plt.ylabel('True Positive Rate')
     plt.title('ROC curve for verification phase')
     plt.legend(loc="lower right")
+    plt.savefig('ROC_curve.jpg')
     #plt.show()
 
 def calc_fm_fnm(clf, y_pred, x_test, y_true, threshold):
     # use the cosine distance  
-    score = predict_proba(clf, x_test) #pred_dist
+    score = predict_proba_verification(clf, x_test) #pred_dist
+    match_mtx = score<threshold
+    fm = 0
+    fnm = 0
+    TP = 0
+    TN = 0
+    for i in range(match_mtx.shape[0]):
+        match_y = np.where(match_mtx[i,])[0]+1
+        not_match_y = np.where(match_mtx[i,]==False)[0]+1
+        fm += len(set(match_y) - set([y_true[i]])) #FP
+        #fnm += int(y_true[i] in not_match_y) #FN
+        fnm += len(set(not_match_y)&set([y_true[i]])) #FN
+        TP += int(y_true[i] in match_y)
+        TN += len(set(not_match_y) - set([y_true[i]]))
     
-    correct_pred_idx = np.where(y_pred == y_true)[0]
-    wrong_pred_idx = np.where(y_pred != y_true)[0]
-    
-    # false match given the threshold: dist<t but y_pred != y_test
-    fm = np.sum(score[wrong_pred_idx]<threshold)
-    # false non-match: dist>t but y_pred = y_test
-    fnm = np.sum(score[wrong_pred_idx]>=threshold)
-    TN = np.sum(score[correct_pred_idx]>=threshold)
-    TP = np.sum(score[correct_pred_idx]<threshold)
-    # FP / (FP + TN)
-    fmr = fm/(fm+TN)
-    # FN / (FN + TP)
-    fnmr = fnm/(fnm+TP)
+    # FP / (FP + TP)
+    fmr = fm/(fm+TP)
+    # FN / (FN + TN)
+    fnmr = fnm/(fnm+TN)
     
     return fmr, fnmr
 
@@ -108,4 +118,6 @@ def generate_fm_fnm_curve(clf, y_pred, x_test, y_true, thresholds):
     plt.xlabel('False match rate')
     plt.ylabel('False non-match rate')
     plt.title('FMR vs FNMR')
+    plt.xlim(-0.01, 0.12)
+    plt.savefig('fig11_13_FM_vs_FNM_curve.jpg')
     plt.show()
