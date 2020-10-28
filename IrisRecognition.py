@@ -81,3 +81,9 @@ if __name__ == "__main__":
     
     crr_plot = generate_LDA_dimension_CRR_plot(x_train, y_train, x_test, y_test)
     generate_roc_curve(clfs, y_preds, x_test_lda, y_test)
+    # table 4
+    generate_threshold_table(clfs[2], y_preds[2], x_test_lda, y_test, 
+                             thresholds = list(np.arange(0, 11)/10)+[0.446, 0.472, 0.502])
+    # fig 11
+    generate_fm_fnm_curve(clfs[2], y_preds[2], x_test_lda, y_test, 
+                          thresholds = list(np.arange(0, 11)/10)+[0.446, 0.472, 0.502])
