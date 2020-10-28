@@ -8,7 +8,8 @@ from IrisNormalization import iris_normalization
 from ImageEnhancement import image_enhancement
 from FeatureExtraction import feature_extraction
 from IrisMatching import dimension_reduction, iris_matching
-from PerformanceEvaluation import generate_roc_curve, calc_crr, generate_crr_table
+#from PerformanceEvaluation import generate_roc_curve, calc_crr, generate_crr_table
+from PerformanceEvaluation import *
 
 IMG_PATH = "./CASIA Iris Image Database (version 1.0)/"
 
@@ -77,4 +78,6 @@ if __name__ == "__main__":
            'reduced feature set': crr}
     print('========= CRR table =========')
     print(pd.DataFrame(crr_dict, index = ['L1', 'L2', 'cosine']))
+    
+    crr_plot = generate_LDA_dimension_CRR_plot(x_train, y_train, x_test, y_test)
     generate_roc_curve(clfs, y_preds, x_test_lda, y_test)
