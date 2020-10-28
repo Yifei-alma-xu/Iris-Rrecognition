@@ -1,6 +1,7 @@
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 from IrisLocalization import iris_localization
 from IrisNormalization import iris_normalization
@@ -61,9 +62,19 @@ if __name__ == "__main__":
     x_train, x_test = generate_features(x_train_img), generate_features(
         x_test_img)
     x_train_lda, x_test_lda = dimension_reduction(x_train, x_test, y_train)
-
+    # oiginal feature set
+    clfs_ori, y_preds_ori = iris_matching(x_train, y_train, x_test)
+    crr_ori = calc_crr(y_preds_ori, y_test)
+    #reduced feature set
     clfs, y_preds = iris_matching(x_train_lda, y_train, x_test_lda)
-
     crr = calc_crr(y_preds, y_test)
+    
+    print('==== Original feature set ====')
+    generate_crr_table(crr_ori)
+    print('==== Reduced feature set ====')
     generate_crr_table(crr)
+    crr_dict = {'original feature set': crr_ori,
+           'reduced feature set': crr}
+    print('========= CRR table =========')
+    print(pd.DataFrame(crr_dict, index = ['L1', 'L2', 'cosine']))
     generate_roc_curve(clfs, y_preds, x_test_lda, y_test)

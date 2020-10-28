@@ -26,6 +26,7 @@ def generate_roc_curve(clfs, y_preds, x_test, y_true,
 
     for i, metric in enumerate(metrics):
         score = predict_proba(clfs[i], x_test)
+        ## pos_label = 1 by default
         fpr, tpr, _ = roc_curve(y_true != y_preds[i], score)
         roc_auc = roc_auc_score(y_true != y_preds[i], score)
         plt.plot(fpr,
