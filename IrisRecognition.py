@@ -80,7 +80,7 @@ if __name__ == "__main__":
     #fig10
     crr_plot = generate_LDA_dimension_CRR_plot(x_train, y_train, x_test,
                                                y_test)
-    generate_roc_curve(clfs, y_preds, x_test_lda, y_test)
+    
     # table 4
     generate_threshold_table(clfs[2],
                              x_test_lda,
@@ -91,3 +91,6 @@ if __name__ == "__main__":
                           x_test_lda,
                           y_test,
                           thresholds=np.arange(0.20, 1, 0.02))
+    # roc curve
+    generate_roc_curve_identification(clfs, y_preds, x_test_lda, y_test)
+    generate_roc_curve(clfs[2], x_test_lda, y_test, thresholds=np.arange(0.10, 1, 0.02))

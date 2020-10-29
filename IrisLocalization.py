@@ -40,20 +40,24 @@ def iris_localization(img):
     eye_edges_iris = cv2.Canny(blured_copy,5,30)
     circles_iris = cv2.HoughCircles(eye_edges_iris,cv2.HOUGH_GRADIENT,1,300,
                             param1=200,param2=20,
-                           minRadius=60,maxRadius=130)
+                           minRadius=70,maxRadius=115) #70, 130
     circles_pupil = cv2.HoughCircles(eye_edges_pupil,cv2.HOUGH_GRADIENT,1,300,
                             param1=200,param2=20,
-                           minRadius=20,maxRadius=80)
+                           minRadius=20,maxRadius=70) #80
     if circles_pupil is not None:
         circle = circles_pupil[0,:][0]
         pupil_circle = np.uint16(np.around(circle))
         pupil_circle[0] = pupil_circle[0]+new_xmin
         pupil_circle[1] = pupil_circle[1]+new_ymin
+    else:
+        pupil_circle = np.uint16(np.around(np.array(Xp, Yp, 30)))
     if circles_iris is not None:
         circle = circles_iris[0,:][0]
         iris_circle = np.uint16(np.around(circle))
         iris_circle[0] = iris_circle[0]+new_xmin
         iris_circle[1] = iris_circle[1]+new_ymin
+    else:
+        iris_circle = np.uint16(np.around(np.array(Xp, Yp, 80)))
     
     return pupil_circle, iris_circle
 
@@ -67,10 +71,10 @@ if __name__ == "__main__":
     pupil, iris = iris_localization(img_gray)
 
     img2 = img_gray.copy()
-    cv2.circle(img2, (pupil[0][0], pupil[0][1]), pupil[0][2], (255, 0, 0), 2)
-    cv2.circle(img2, (pupil[0][0], pupil[0][1]), 2, (255, 0, 0), 3)
-    cv2.circle(img2, (iris[0][0], iris[0][1]), iris[0][2], (255, 0, 0), 2)
-    cv2.circle(img2, (iris[0][0], iris[0][1]), 2, (255, 0, 0), 3)
+    cv2.circle(img2, (pupil[0], pupil[1]), pupil[2], (255, 0, 0), 2)
+    cv2.circle(img2, (pupil[0], pupil[1]), 2, (255, 0, 0), 3)
+    cv2.circle(img2, (iris[0], iris[1]), iris[2], (255, 0, 0), 2)
+    cv2.circle(img2, (iris[0], iris[1]), 2, (255, 0, 0), 3)
     plt.figure()
     plt.imshow(img2, cmap='gray')
     plt.show()

@@ -1,5 +1,5 @@
 from sklearn.metrics.pairwise import pairwise_distances
-from sklearn.metrics import roc_curve, roc_auc_score
+from sklearn.metrics import roc_curve, roc_auc_score, auc
 from IrisMatching import DISTANCE_METRICS, LinearDiscriminantAnalysis, iris_matching
 import numpy as np
 import pandas as pd
@@ -53,7 +53,7 @@ def predict_proba_verification(self, X):
     return probs
 
 
-def generate_roc_curve(clfs, y_preds, x_test, y_true,
+def generate_roc_curve_identification(clfs, y_preds, x_test, y_true,
                        metrics=DISTANCE_METRICS):
     plt.figure()
     lw = 2
@@ -71,9 +71,9 @@ def generate_roc_curve(clfs, y_preds, x_test, y_true,
     plt.ylim([0.0, 1.05])
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.title('ROC curve for verification phase')
+    plt.title('ROC curve for identification phase')
     plt.legend(loc="lower right")
-    plt.savefig('ROC_curve.jpg')
+    plt.savefig('ROC_curve_identification.jpg')
     #plt.show()
 
 
@@ -98,23 +98,29 @@ def calc_fm_fnm(clf, x_test, y_true, threshold):
     fmr = fm / (fm + TP)
     # FN / (FN + TN)
     fnmr = fnm / (fnm + TN)
+    tpr = TP/ (TP+fnm)
+    fpr = fm/(fm + TN)
 
-    return fmr, fnmr
+    return fmr, fnmr, tpr, fpr
 
 
 def generate_fmr_fnmr_arr(clf, x_test, y_true, thresholds):
     fmr_arr = []
     fnmr_arr = []
+    tpr_arr = []
+    fpr_arr = []
     for t in thresholds:
-        fmr, fnmr = calc_fm_fnm(clf, x_test, y_true, t)
+        fmr, fnmr, tpr, fpr  = calc_fm_fnm(clf, x_test, y_true, t)
         fmr_arr.append(fmr)
         fnmr_arr.append(fnmr)
+        tpr_arr.append(tpr)
+        fpr_arr.append(fpr)
 
-    return fmr_arr, fnmr_arr
+    return fmr_arr, fnmr_arr, tpr_arr, fpr_arr
 
 
 def generate_threshold_table(clf, x_test, y_true, thresholds):
-    fmr_arr, fnmr_arr = generate_fmr_fnmr_arr(clf, x_test, y_true, thresholds)
+    fmr_arr, fnmr_arr, _, _ = generate_fmr_fnmr_arr(clf, x_test, y_true, thresholds)
     print('========= FMR and FNMR table =========')
     value_dict = {
         'Threshold': thresholds,
@@ -125,11 +131,27 @@ def generate_threshold_table(clf, x_test, y_true, thresholds):
 
 
 def generate_fm_fnm_curve(clf, x_test, y_true, thresholds):
-    fmr_arr, fnmr_arr = generate_fmr_fnmr_arr(clf, x_test, y_true, thresholds)
+    fmr_arr, fnmr_arr, _, _ = generate_fmr_fnmr_arr(clf, x_test, y_true, thresholds)
     plt.figure()
     plt.plot(fmr_arr, fnmr_arr)
     plt.xlabel('False match rate')
     plt.ylabel('False non-match rate')
     plt.title('FMR vs FNMR')
     plt.savefig('fig11_13_FM_vs_FNM_curve.jpg')
+    #plt.show()
+
+def generate_roc_curve(clf, x_test, y_true, thresholds):
+    _, _, tpr_arr, fpr_arr = generate_fmr_fnmr_arr(clf, x_test, y_true, thresholds)
+    #roc_auc = auc(fpr_arr, tpr_arr)
+    plt.figure()
+    plt.plot(fpr_arr,tpr_arr,lw=2)
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+            #label=f'ROC curve (area = %0.2f)' % roc_auc)
+    plt.xlim([-0.01, 0.7])
+    plt.ylim([-0.01, 1])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC curve for verification phase')
+    #plt.legend(loc="lower right")
+    plt.savefig('ROC_curve_verification.jpg')
     plt.show()
