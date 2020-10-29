@@ -8,7 +8,6 @@ from IrisNormalization import iris_normalization
 from ImageEnhancement import image_enhancement
 from FeatureExtraction import feature_extraction
 from IrisMatching import dimension_reduction, iris_matching
-#from PerformanceEvaluation import generate_roc_curve, calc_crr, generate_crr_table
 from PerformanceEvaluation import *
 
 IMG_PATH = "./CASIA Iris Image Database (version 1.0)/"
@@ -69,22 +68,26 @@ if __name__ == "__main__":
     #reduced feature set
     clfs, y_preds = iris_matching(x_train_lda, y_train, x_test_lda)
     crr = calc_crr(y_preds, y_test)
-    
+
     print('==== Original feature set ====')
     generate_crr_table(crr_ori)
     print('==== Reduced feature set ====')
     generate_crr_table(crr)
-    crr_dict = {'original feature set': crr_ori,
-           'reduced feature set': crr}
+    crr_dict = {'original feature set': crr_ori, 'reduced feature set': crr}
     print('========= CRR table =========')
-    print(pd.DataFrame(crr_dict, index = ['L1', 'L2', 'cosine']))
-    
+    print(pd.DataFrame(crr_dict, index=['L1', 'L2', 'cosine']))
+
     #fig10
-    crr_plot = generate_LDA_dimension_CRR_plot(x_train, y_train, x_test, y_test)
+    crr_plot = generate_LDA_dimension_CRR_plot(x_train, y_train, x_test,
+                                               y_test)
     generate_roc_curve(clfs, y_preds, x_test_lda, y_test)
     # table 4
-    generate_threshold_table(clfs[2], y_preds[2], x_test_lda, y_test, 
-                             thresholds = [1.5e-8, 1e-7, 1.5e-7])
+    generate_threshold_table(clfs[2],
+                             x_test_lda,
+                             y_test,
+                             thresholds=[0.446, 0.472, 0.502])
     # fig 11
-    generate_fm_fnm_curve(clfs[2], y_preds[2], x_test_lda, y_test, 
-                          thresholds = np.arange(1, 10, 0.05)*1e-7)
+    generate_fm_fnm_curve(clfs[2],
+                          x_test_lda,
+                          y_test,
+                          thresholds=np.arange(0.20, 1, 0.02))

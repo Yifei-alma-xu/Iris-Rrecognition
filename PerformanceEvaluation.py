@@ -9,21 +9,27 @@ import matplotlib.pyplot as plt
 def calc_crr(y_preds, y_true):
     return [(y_pred == y_true).mean() for y_pred in y_preds]
 
+
 def generate_crr_table(crrs, metrics=DISTANCE_METRICS):
     for i, metric in enumerate(metrics):
         print(f"With {metric} metric, CRR is {crrs[i]}")
 
-def generate_LDA_dimension_CRR_plot(x_train, y_train, x_test, y_test, 
-                                    dimension_arr = list(range(10, 107, 10)) + [107]):
+
+def generate_LDA_dimension_CRR_plot(x_train,
+                                    y_train,
+                                    x_test,
+                                    y_test,
+                                    dimension_arr=list(range(10, 107, 10)) +
+                                    [107]):
     crr_arr = []
     for i in dimension_arr:
-        lda = LinearDiscriminantAnalysis(n_components = i).fit(x_train, y_train)
+        lda = LinearDiscriminantAnalysis(n_components=i).fit(x_train, y_train)
         x_train_lda = lda.transform(x_train)
         x_test_lda = lda.transform(x_test)
         clfs, y_preds = iris_matching(x_train_lda, y_train, x_test_lda)
         crr_cosine = calc_crr(y_preds, y_test)[2]
         crr_arr.append(crr_cosine)
-     
+
     plt.figure()
     plt.plot(dimension_arr, crr_arr)
     plt.xlabel('Dimensionality of the feature vector')
@@ -32,17 +38,20 @@ def generate_LDA_dimension_CRR_plot(x_train, y_train, x_test, y_test,
     plt.savefig('fig10_CRR_dimentionality.jpg')
     #plt.show()
     return crr_arr
-        
+
+
 # use distance to generate ROC curve
 def predict_proba(self, X):
     distances = pairwise_distances(X, self.centroids_, metric=self.metric)
     probs = np.min(distances, axis=1)
     return probs
 
+
 def predict_proba_verification(self, X):
     distances = pairwise_distances(X, self.centroids_, metric=self.metric)
     probs = distances
     return probs
+
 
 def generate_roc_curve(clfs, y_preds, x_test, y_true,
                        metrics=DISTANCE_METRICS):
@@ -67,57 +76,60 @@ def generate_roc_curve(clfs, y_preds, x_test, y_true,
     plt.savefig('ROC_curve.jpg')
     #plt.show()
 
-def calc_fm_fnm(clf, y_pred, x_test, y_true, threshold):
-    # use the cosine distance  
-    score = predict_proba_verification(clf, x_test) #pred_dist
-    match_mtx = score<threshold
+
+def calc_fm_fnm(clf, x_test, y_true, threshold):
+    # use the cosine distance
+    score = predict_proba_verification(clf, x_test)  #pred_dist
+    match_mtx = score < threshold
     fm = 0
     fnm = 0
     TP = 0
     TN = 0
     for i in range(match_mtx.shape[0]):
-        match_y = np.where(match_mtx[i,])[0]+1
-        not_match_y = np.where(match_mtx[i,]==False)[0]+1
-        fm += len(set(match_y) - set([y_true[i]])) #FP
+        match_y = np.where(match_mtx[i, ])[0] + 1
+        not_match_y = np.where(match_mtx[i, ] == False)[0] + 1
+        fm += len(set(match_y) - set([y_true[i]]))  #FP
         #fnm += int(y_true[i] in not_match_y) #FN
-        fnm += len(set(not_match_y)&set([y_true[i]])) #FN
+        fnm += len(set(not_match_y) & set([y_true[i]]))  #FN
         TP += int(y_true[i] in match_y)
         TN += len(set(not_match_y) - set([y_true[i]]))
-    
+
     # FP / (FP + TP)
-    fmr = fm/(fm+TP)
+    fmr = fm / (fm + TP)
     # FN / (FN + TN)
-    fnmr = fnm/(fnm+TN)
-    
+    fnmr = fnm / (fnm + TN)
+
     return fmr, fnmr
 
-def generate_fmr_fnmr_arr(clf, y_pred, x_test, y_true, thresholds):
+
+def generate_fmr_fnmr_arr(clf, x_test, y_true, thresholds):
     fmr_arr = []
     fnmr_arr = []
     for t in thresholds:
-        fmr, fnmr = calc_fm_fnm(clf, y_pred, x_test, y_true, t)
+        fmr, fnmr = calc_fm_fnm(clf, x_test, y_true, t)
         fmr_arr.append(fmr)
         fnmr_arr.append(fnmr)
-    
+
     return fmr_arr, fnmr_arr
 
-def generate_threshold_table(clf, y_pred, x_test, y_true, thresholds):
-    fmr_arr, fnmr_arr = generate_fmr_fnmr_arr(clf, y_pred, x_test, 
-                                              y_true, thresholds)
+
+def generate_threshold_table(clf, x_test, y_true, thresholds):
+    fmr_arr, fnmr_arr = generate_fmr_fnmr_arr(clf, x_test, y_true, thresholds)
     print('========= FMR and FNMR table =========')
-    value_dict = {'Threshold': thresholds,
-                'False match rate': fmr_arr,
-                 'False non-match rate': fnmr_arr}
+    value_dict = {
+        'Threshold': thresholds,
+        'False match rate': fmr_arr,
+        'False non-match rate': fnmr_arr
+    }
     print(pd.DataFrame(value_dict))
-    
-def generate_fm_fnm_curve(clf, y_pred, x_test, y_true, thresholds):
-    fmr_arr, fnmr_arr = generate_fmr_fnmr_arr(clf, y_pred, x_test, 
-                                              y_true, thresholds)
+
+
+def generate_fm_fnm_curve(clf, x_test, y_true, thresholds):
+    fmr_arr, fnmr_arr = generate_fmr_fnmr_arr(clf, x_test, y_true, thresholds)
     plt.figure()
     plt.plot(fmr_arr, fnmr_arr)
     plt.xlabel('False match rate')
     plt.ylabel('False non-match rate')
     plt.title('FMR vs FNMR')
-    plt.xlim(-0.01, 0.12)
     plt.savefig('fig11_13_FM_vs_FNM_curve.jpg')
     plt.show()

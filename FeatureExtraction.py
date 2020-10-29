@@ -16,7 +16,6 @@ def defined_filter(sigma_x, sigma_y, size, f):
 
 
 def feature_extraction(rect_roi):
-    m = 280
     filt1 = defined_filter(3, 1.5, 7, 0.07)
     filt2 = defined_filter(4.5, 1.5, 7, 0.07)
     img_filt1 = ndimage.convolve(rect_roi, filt1, mode='wrap')
@@ -26,10 +25,10 @@ def feature_extraction(rect_roi):
         for j in range(6):
             m1 = abs(img_filt1[j * 8:j * 8 + 8, i * 8:i * 8 + 8]).mean()
             s1 = abs(abs(img_filt1[j * 8:j * 8 + 8, i * 8:i * 8 + 8]) -
-                     m).mean()
+                     m1).mean()
             m2 = abs(img_filt2[j * 8:j * 8 + 8, i * 8:i * 8 + 8]).mean()
             s2 = abs(abs(img_filt2[j * 8:j * 8 + 8, i * 8:i * 8 + 8]) -
-                     m).mean()
+                     m2).mean()
             v.append(m1)
             v.append(s1)
             v.append(m2)

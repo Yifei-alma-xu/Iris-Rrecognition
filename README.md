@@ -11,9 +11,9 @@ Fall 2020 GR5293 Image Analysis: Group Project Iris Recognition
   
 | Metric | Origin feature set | Reduced feature set |
 | :---: | :---: | :---: |
-| L1 | 0.689815  | 0.930556| 
-| L2 |0.657407 | 0.932870 |
-| cosine | 0.666667 | 0.928241 |
+| L1 | 0.708333  | 0.865741| 
+| L2 |0.662037 | 0.875000 |
+| cosine | 0.659722 | 0.891204 |
   
   - CRR vs dimensionality(fig 10)
    <img src="fig10_CRR_dimentionality.jpg" height="300">
@@ -22,9 +22,9 @@ Fall 2020 GR5293 Image Analysis: Group Project Iris Recognition
   
   |Threshold| False match rate | False non-match rate|
   | :---: | :---: | :---: |
-  |1.50e-08    |      0.000000     |   0.009238|
-  |1.00e-07    |      0.000000     |   0.003793|
-  |1.500e-07   |      0.002924     |   0.001965|
+  |0.446    |      0.009804     |   0.002783|
+  |0.472    |      0.015480     |   0.002460|
+  |0.502   |      0.025937     |   0.002030|
   - fig 11/13
   <img src="fig11_13_FM_vs_FNM_curve.jpg" height="300">
   - ROC figure:
@@ -106,19 +106,19 @@ Fall 2020 GR5293 Image Analysis: Group Project Iris Recognition
   - def generate_roc_curve(clfs, y_preds, x_test, y_true, metrics=DISTANCE_METRICS)
     - input: clfs: list of classifiers, y_preds, x_test, y_true, metrics
     - output: the ROC curve
-  - def calc_fm_fnm(clf, y_pred, x_test, y_true, threshold)
-    - input: clf: classifer with cosine distance, y_pred, x_test, y_true, threshold
+  - def calc_fm_fnm(clf, x_test, y_true, threshold)
+    - input: clf: classifer with cosine distance, x_test, y_true, threshold
     - output: the num of fm and fnm given data and threshold
-  - def generate_fmr_fnmr_arr(clf, y_pred, x_test, y_true, thresholds)
-    - input: clf: classifer with cosine distance, y_pred, x_test, y_true, thresholds: list of thresholds
+  - def generate_fmr_fnmr_arr(clf, x_test, y_true, thresholds)
+    - input: clf: classifer with cosine distance, x_test, y_true, thresholds: list of thresholds
     - output: array of fmr and fnmr given thresholds
-  - def generate_threshold_table(clf, y_pred, x_test, y_true, thresholds)
-    - input: clf: classifer with cosine distance, y_pred, x_test, y_true, thresholds: list of thresholds
+  - def generate_threshold_table(clf, x_test, y_true, thresholds)
+    - input: clf: classifer with cosine distance, x_test, y_true, thresholds: list of thresholds
     - output: table of fmr and fnmr with given thresholds
     - step 1: generate the fmr and fnmr array from given data
     - step 2: print the table
-  - def generate_fm_fnm_curve(clf, y_pred, x_test, y_true, thresholds)
-    - input: clf: classifer with cosine distance, y_pred, x_test, y_true, thresholds: list of thresholds
+  - def generate_fm_fnm_curve(clf, x_test, y_true, thresholds)
+    - input: clf: classifer with cosine distance, x_test, y_true, thresholds: list of thresholds
     - output: table of fmr and fnmr with given thresholds
     - step 1: generate the fmr and fnmr array from given data
     - step 2: plot the curve
