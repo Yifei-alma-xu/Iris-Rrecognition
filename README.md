@@ -8,27 +8,33 @@ Fall 2020 GR5293 Image Analysis: Group Project Iris Recognition
   - num of training images: 324
   - num of testing images: 432
   - CRR table(table3)
-  
+
 | Metric | Origin feature set | Reduced feature set |
 | :---: | :---: | :---: |
-| L1 | 0.708333  | 0.865741| 
-| L2 |0.662037 | 0.875000 |
-| cosine | 0.659722 | 0.891204 |
+| L1 |  0.752315  | 0.900463| 
+| L2 |0.696759 | 0.902778 |
+| cosine | 0.696759 | 0.918981 |
   
   - CRR vs dimensionality(fig 10)
    <img src="fig10_CRR_dimentionality.jpg" height="300">
 
   - False Match and False Nonmatch Rates with Different Threshold Values(table 4)
-  
+
   |Threshold| False match rate | False non-match rate|
   | :---: | :---: | :---: |
-  |0.446    |      0.009804     |   0.002783|
-  |0.472    |      0.015480     |   0.002460|
-  |0.502   |      0.025937     |   0.002030|
-  - fig 11/13
+  |0.446    |      0.000000      |    0.002202|
+  |0.472    |      0.008671     |   0.001922|
+  |0.502   |      0.024725     |   0.001663|
+  
+  - FM vs FNM (fig 11/13)
+  
   <img src="fig11_13_FM_vs_FNM_curve.jpg" height="300">
-  - ROC figure:
-  <img src="ROC_curve.jpg" height="300">
+  
+  - ROC figure for verfication mode:
+  <img src="ROC_curve_verification.jpg" height="300">
+  
+  - ROC figure for identification mode:
+   <img src="ROC_curve_identification.jpg" height="300">
 
 ## Design
   - The project implement the exact same design as Ma et al., 2003 paper.
@@ -103,15 +109,15 @@ Fall 2020 GR5293 Image Analysis: Group Project Iris Recognition
     - input: self: classifier; X: X used to predict
     - output: the probability/distance for the predictions
     - step 1: use the classifer to predict the probability
-  - def generate_roc_curve(clfs, y_preds, x_test, y_true, metrics=DISTANCE_METRICS)
+  - def generate_roc_curve_identification(clfs, y_preds, x_test, y_true, metrics=DISTANCE_METRICS)
     - input: clfs: list of classifiers, y_preds, x_test, y_true, metrics
-    - output: the ROC curve
+    - output: the ROC curve for identification mode
   - def calc_fm_fnm(clf, x_test, y_true, threshold)
     - input: clf: classifer with cosine distance, x_test, y_true, threshold
-    - output: the num of fm and fnm given data and threshold
+    - output: fmr, fnmr, tpr, fpr given data and threshold
   - def generate_fmr_fnmr_arr(clf, x_test, y_true, thresholds)
     - input: clf: classifer with cosine distance, x_test, y_true, thresholds: list of thresholds
-    - output: array of fmr and fnmr given thresholds
+    - output: arrays of fmr, fnmr, tpr, fpr given thresholds
   - def generate_threshold_table(clf, x_test, y_true, thresholds)
     - input: clf: classifer with cosine distance, x_test, y_true, thresholds: list of thresholds
     - output: table of fmr and fnmr with given thresholds
@@ -122,6 +128,9 @@ Fall 2020 GR5293 Image Analysis: Group Project Iris Recognition
     - output: table of fmr and fnmr with given thresholds
     - step 1: generate the fmr and fnmr array from given data
     - step 2: plot the curve
+  - def generate_roc_curve(clf, x_test, y_true, thresholds)
+    - input: clfs: list of classifiers, x_test, y_true, thresholds
+    - output: the ROC curve for verrification mode
   
 
 ## Limitations
